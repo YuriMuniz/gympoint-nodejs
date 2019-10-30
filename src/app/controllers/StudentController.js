@@ -69,7 +69,7 @@ class StudentController {
         const { id } = req.body;
         const student = await Student.findByPk(id);
         if (!student) {
-            return res.status(400).json({ error: 'Student not found' });
+            return res.status(401).json({ error: 'Student not found' });
         }
         const { name, email, age, weight, height } = await student.update(
             req.body
