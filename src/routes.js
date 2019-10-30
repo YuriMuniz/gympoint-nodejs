@@ -2,6 +2,7 @@ import { Router } from 'express';
 import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
 import authMiddleware from './app/middlewares/auth';
+import PlanController from './app/controllers/PlanController';
 
 const routes = new Router();
 
@@ -11,10 +12,14 @@ routes.post('/sessions', SessionController.store);
 // Middleware global usada para todas rotas abaixo dela precisar estar autenticado
 routes.use(authMiddleware);
 
-// Rota para novo estudante
+// Rotas estudantes
 routes.post('/students', StudentController.store);
-
-// Rota alterar estudante
 routes.put('/students', StudentController.update);
+
+// Rotas planos
+routes.post('/plans', PlanController.store);
+routes.get('/plans', PlanController.index);
+routes.put('/plans', PlanController.update);
+routes.delete('/plans', PlanController.delete);
 
 export default routes;
