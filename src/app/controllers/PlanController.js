@@ -55,17 +55,12 @@ class PlanController {
     }
 
     async delete(req, res) {
-        const schema = Yup.object().shape({
-            id: Yup.number().required(),
-        });
-        // Verificar resposta validação
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation fails' });
+        const plan = await Plan.findByPk(req.params.id);
+        if (!plan) {
+            return res.status(401).json({ error: 'Plan not found.' });
         }
 
-        await Plan.destroy({
-            where: { id: req.body.id },
-        });
+        await plan.destroy();
 
         return res.json({ message: 'The plan has been deleted' });
     }
