@@ -21,11 +21,12 @@ routes.put('/students', StudentController.update);
 routes.post('/plans', PlanController.store);
 routes.get('/plans', PlanController.index);
 routes.put('/plans', PlanController.update);
-routes.delete('/plans', PlanController.delete);
+routes.delete('/plans/:id', PlanController.delete);
 
 // Rotas matriculas
 routes.post('/registrations', RegistrationController.store);
 routes.put('/registrations', RegistrationController.update);
 routes.get('/registrations', RegistrationController.index);
+routes.delete('/registrations/:id', RegistrationController.delete);
 
 export default routes;

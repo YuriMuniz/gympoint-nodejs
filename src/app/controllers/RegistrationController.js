@@ -1,15 +1,52 @@
 import { addMonths, parseISO } from 'date-fns';
+import * as Yup from 'yup';
 import Student from '../models/Student';
 import Plan from '../models/Plan';
 import Registration from '../models/Registration';
 
 class RegistrationController {
     async index(req, res) {
-        const registrations = await Registration.findAll();
+        const { page = 1 } = req.query;
+        const registrations = await Registration.findAll({
+            order: ['created_at'],
+            attributes: ['id', 'start_date', 'end_date', 'price'],
+            limit: 20,
+            offset: (page - 1) * 20,
+            include: [
+                {
+                    model: Student,
+                    as: 'student',
+                    attributes: [
+                        'id',
+                        'name',
+                        'email',
+                        'age',
+                        'height',
+                        'weight',
+                    ],
+                },
+                {
+                    model: Plan,
+                    as: 'plan',
+                    attributes: ['id', 'title', 'duration', 'price'],
+                },
+            ],
+        });
         return res.json(registrations);
     }
 
     async store(req, res) {
+        const schema = Yup.object().shape({
+            start_date: Yup.date().required(),
+            student_id: Yup.number().required(),
+            plan_id: Yup.number().required(),
+        });
+
+        // Verificar resposta validação
+        if (!(await schema.isValid(req.body))) {
+            return res.status(400).json({ error: 'Validation fails' });
+        }
+
         const { student_id, plan_id, start_date } = req.body;
         const student = await Student.findByPk(student_id);
         const plan = await Plan.findByPk(plan_id);
@@ -37,6 +74,17 @@ class RegistrationController {
     }
 
     async update(req, res) {
+        const schema = Yup.object().shape({
+            id: Yup.number().required(),
+            start_date: Yup.date(),
+            student_id: Yup.number(),
+            plan_id: Yup.number(),
+        });
+
+        // Verificar resposta validação
+        if (!(await schema.isValid(req.body))) {
+            return res.status(400).json({ error: 'Validation fails' });
+        }
         const { id } = req.body;
         let endDate = '';
         let totalPrice = '';
@@ -100,6 +148,18 @@ class RegistrationController {
             plan_id,
             price,
         });
+    }
+
+    async delete(req, res) {
+        const registration = await Registration.findByPk(req.params.id);
+
+        if (!registration) {
+            return res.status(401).json({ error: 'Registration not found' });
+        }
+
+        await registration.destroy();
+
+        return res.json({ message: 'The registration has been deleted' });
     }
 }
 
