@@ -3,6 +3,7 @@ import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
 import authMiddleware from './app/middlewares/auth';
 import PlanController from './app/controllers/PlanController';
+import RegistrationController from './app/controllers/RegistrationController';
 
 const routes = new Router();
 
@@ -21,5 +22,10 @@ routes.post('/plans', PlanController.store);
 routes.get('/plans', PlanController.index);
 routes.put('/plans', PlanController.update);
 routes.delete('/plans', PlanController.delete);
+
+// Rotas matriculas
+routes.post('/registrations', RegistrationController.store);
+routes.put('/registrations', RegistrationController.update);
+routes.get('/registrations', RegistrationController.index);
 
 export default routes;

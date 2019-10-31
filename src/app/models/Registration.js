@@ -1,11 +1,11 @@
 import Sequelize, { Model } from 'sequelize';
 
 class Registration extends Model {
-    init(sequelize) {
+    static init(sequelize) {
         super.init(
             {
                 start_date: Sequelize.DATE,
-                end_date: Sequelize.Date,
+                end_date: Sequelize.DATE,
                 price: Sequelize.FLOAT,
             },
             {
