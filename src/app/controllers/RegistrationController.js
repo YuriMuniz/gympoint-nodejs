@@ -38,7 +38,8 @@ class RegistrationController {
 
     async update(req, res) {
         const { id } = req.body;
-        let end_date = '';
+        let endDate = '';
+        let totalPrice = '';
 
         const registration = await Registration.findByPk(id);
 
@@ -58,29 +59,38 @@ class RegistrationController {
             if (!plan) {
                 return res.status(401).json({ error: 'Plan not found' });
             }
-            end_date = addMonths(registration.start_date, plan.duration);
+            endDate = addMonths(registration.start_date, plan.duration);
+            totalPrice = plan.price * plan.duration;
         }
         if (req.body.plan_id && req.body.start_date) {
             const plan = await Plan.findByPk(req.body.plan_id);
             if (!plan) {
                 return res.status(401).json({ error: 'Plan not found' });
             }
-            end_date = addMonths(parseISO(req.body.start_date), plan.duration);
+            endDate = addMonths(parseISO(req.body.start_date), plan.duration);
+            totalPrice = plan.price * plan.duration;
         }
 
         if (!req.body.plan_id && req.body.start_date) {
             const plan = await Plan.findByPk(registration.plan_id);
-            end_date = addMonths(parseISO(req.body.start_date), plan.duration);
+            endDate = addMonths(parseISO(req.body.start_date), plan.duration);
         }
 
-        if (end_date === '') {
-            end_date = registration.end_date;
+        if (totalPrice !== '') {
+            await registration.update({ price: totalPrice });
         }
 
-        const { start_date, student_id, plan_id } = await registration.update(
-            req.body
-        );
-        await registration.update({ end_date });
+        if (endDate !== '') {
+            await registration.update({ end_date: endDate });
+        }
+
+        const {
+            start_date,
+            end_date,
+            student_id,
+            plan_id,
+            price,
+        } = await registration.update(req.body);
 
         return res.json({
             id,
@@ -88,6 +98,7 @@ class RegistrationController {
             end_date,
             student_id,
             plan_id,
+            price,
         });
     }
 }
