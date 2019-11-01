@@ -3,6 +3,8 @@ import * as Yup from 'yup';
 import Student from '../models/Student';
 import Plan from '../models/Plan';
 import Registration from '../models/Registration';
+import Queue from '../../lib/Queue';
+import RegistrationMail from '../jobs/RegistrationMail';
 
 class RegistrationController {
     async index(req, res) {
@@ -68,6 +70,12 @@ class RegistrationController {
             price,
             start_date,
             end_date,
+        });
+
+        await Queue.add(RegistrationMail.key, {
+            registration,
+            plan,
+            student,
         });
 
         return res.json(registration);
