@@ -5,6 +5,8 @@ import authMiddleware from './app/middlewares/auth';
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
 import CheckinController from './app/controllers/CheckinController';
+import StudentHelpOrdersController from './app/controllers/StudentHelpOrdersController';
+import GymHelpOrdersController from './app/controllers/GymHelpOrdersController';
 
 const routes = new Router();
 
@@ -33,5 +35,13 @@ routes.delete('/registrations/:id', RegistrationController.delete);
 // Rotas checkins
 routes.post('/students/:id/checkins', CheckinController.store);
 routes.get('/students/:id/checkins', CheckinController.index);
+
+// Rota ajuda estudante
+routes.post('/students/:id/help-orders', StudentHelpOrdersController.store);
+routes.get('/students/:id/help-orders', StudentHelpOrdersController.index);
+
+// Rota ajuda academia
+routes.post('/help-orders/:id/answer', GymHelpOrdersController.store);
+routes.get('/help-orders/:id/answer', GymHelpOrdersController.index);
 
 export default routes;

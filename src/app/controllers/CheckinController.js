@@ -7,7 +7,7 @@ class CheckinController {
         const { id } = req.params;
         const checkins = await Checkin.find({
             student_id: id,
-        });
+        }).sort({ createdAt: 'desc' });
         return res.json(checkins);
     }
 
@@ -41,7 +41,7 @@ class CheckinController {
 
         await Checkin.create({
             student_id: id,
-            content: `Esse é o checkin nº ${numberCheckins} dessa semana.`,
+            content: `Checkin nº ${numberCheckins} da semana.`,
         });
 
         const checkins = await Checkin.find({
@@ -50,7 +50,7 @@ class CheckinController {
                 $gte: startDate,
                 $lte: endDate,
             },
-        });
+        }).sort({ createdAt: 'desc' });
 
         return res.json(checkins);
     }
