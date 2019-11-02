@@ -3,6 +3,14 @@ import { startOfWeek, addDays } from 'date-fns';
 import Checkin from '../schemas/Checkin';
 
 class CheckinController {
+    async index(req, res) {
+        const { id } = req.params;
+        const checkins = await Checkin.find({
+            student_id: id,
+        });
+        return res.json(checkins);
+    }
+
     async store(req, res) {
         const { id } = req.params;
 
@@ -10,12 +18,11 @@ class CheckinController {
         const endDate = addDays(startDate, 7);
 
         /**
-         * Get all checkins in week
+         * Listar todos os checkins da semana por usuario
          */
 
         const checkinsInWeek = await Checkin.find({
             student_id: id,
-
             createdAt: {
                 $gte: startDate,
                 $lte: endDate,
@@ -23,23 +30,22 @@ class CheckinController {
         });
 
         /**
-         * Verify
+         * Verificar limite de 5 checkins
          */
         if (checkinsInWeek.length >= 5) {
-            return res
-                .status(401)
-                .json({ error: 'Checkin limit has been reached ' });
+            return res.status(401).json({
+                error: 'Week checkin limit has been reached ',
+            });
         }
         const numberCheckins = checkinsInWeek.length + 1;
 
         await Checkin.create({
             student_id: id,
-            content: ` Esse é o chekin nº ${numberCheckins} dessa semana.`,
+            content: `Esse é o checkin nº ${numberCheckins} dessa semana.`,
         });
 
         const checkins = await Checkin.find({
             student_id: id,
-
             createdAt: {
                 $gte: startDate,
                 $lte: endDate,

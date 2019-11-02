@@ -32,4 +32,6 @@ routes.delete('/registrations/:id', RegistrationController.delete);
 
 // Rotas checkins
 routes.post('/students/:id/checkins', CheckinController.store);
+routes.get('/students/:id/checkins', CheckinController.index);
+
 export default routes;
