@@ -4,6 +4,7 @@ import StudentController from './app/controllers/StudentController';
 import authMiddleware from './app/middlewares/auth';
 import PlanController from './app/controllers/PlanController';
 import RegistrationController from './app/controllers/RegistrationController';
+import CheckinController from './app/controllers/CheckinController';
 
 const routes = new Router();
 
@@ -29,4 +30,6 @@ routes.put('/registrations', RegistrationController.update);
 routes.get('/registrations', RegistrationController.index);
 routes.delete('/registrations/:id', RegistrationController.delete);
 
+// Rotas checkins
+routes.post('/students/:id/checkins', CheckinController.store);
 export default routes;
